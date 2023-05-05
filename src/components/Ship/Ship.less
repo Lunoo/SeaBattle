@@ -1,0 +1,26 @@
+.ship {
+  position: absolute;
+  background-color: #8e81f3;
+
+  &:before {
+    position: absolute;
+    //content: "";
+    border: 12.5px solid transparent;
+  }
+
+  &--vertical {
+    &:before {
+      top: -24px;
+      left: 0;
+      border-bottom: 12.5px solid #8e81f3;
+    }
+  }
+
+  &--horizontal {
+    &:before {
+      right: -24px;
+      top: 0;
+      border-left: 12.5px solid #8e81f3;
+    }
+  }
+}
