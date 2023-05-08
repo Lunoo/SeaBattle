@@ -24,20 +24,17 @@ import Ship from '@/components/Ship/Ship.vue'
 
 export default defineComponent({
   props: {
+    boardSize: {
+      type: Object as PropType<Coords>,
+      required: true
+    },
     ships: {
       type: Array as PropType<ShipPlacement[]>,
       required: true
     }
   },
   name: 'Board',
-  components: { Ship },
-  setup() {
-    const boardSize: Coords = { x: 10, y: 10 }
-
-    return {
-      boardSize
-    }
-  }
+  components: { Ship }
 })
 </script>
 

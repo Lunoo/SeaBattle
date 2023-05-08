@@ -1,31 +1,41 @@
 <template>
+  <TheHeader />
   <main>
-    <Board :ships="ships" />
-    <Board :ships="[]" />
+    <Board :board-size="boardSize" :ships="ships" />
+    <Board :board-size="boardSize" :ships="[]" />
   </main>
+  <ConfigurationPanel @new-game="startNewGame" />
 </template>
 
 <script lang="ts">
-import { Board } from './components'
+import { Board, ConfigurationPanel, TheHeader } from './components'
 import { defineComponent, ref } from 'vue'
 import { generateShipsPlacement } from '@/helpers/helpers'
-import type { ShipPlacement } from '@/types'
+import type { Coords, ShipPlacement } from '@/types'
 
 export default defineComponent({
   name: 'App',
   components: {
-    Board
+    Board,
+    ConfigurationPanel,
+    TheHeader
   },
   setup() {
-    const ships = ref<ShipPlacement[]>(
-      generateShipsPlacement({ x: 10, y: 10 }, [4, 3, 3, 2, 2, 2, 1, 1, 1, 1])
-    )
+    const boardSize: Coords = { x: 10, y: 10 }
+    const shipSizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
+    const ships = ref<ShipPlacement[]>([])
+
+    const startNewGame = () => {
+      ships.value = generateShipsPlacement(boardSize, shipSizes)
+    }
 
     return {
-      ships
+      boardSize,
+      ships,
+      startNewGame
     }
   }
 })
 </script>
 
-<style src="./App.less"></style>
+<style src="./App.less" />

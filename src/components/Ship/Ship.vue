@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import type { PropType } from 'vue'
 import type { Coords, Direction } from '@/types'
 
@@ -25,12 +25,12 @@ export default defineComponent({
   },
   name: 'Ship',
   setup(props) {
-    const styles = {
+    const styles = computed(() => ({
       width: props.direction === 'horizontal' ? cellSize * props.size + 'px' : `${cellSize}px`,
       height: props.direction === 'vertical' ? cellSize * props.size + 'px' : `${cellSize}px`,
       left: cellSize * props.position.x + 'px',
       top: cellSize * props.position.y + 'px'
-    }
+    }))
 
     return {
       styles
