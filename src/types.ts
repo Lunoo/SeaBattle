@@ -5,7 +5,7 @@ export interface Coords {
 
 export type Direction = 'vertical' | 'horizontal'
 
-export interface ShipParams {
+export interface ShipPlacement {
   direction: Direction
   position: Coords
   size: number

@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Board :ships="myShips" />
+    <Board :ships="ships" />
     <Board :ships="[]" />
   </main>
 </template>
@@ -8,7 +8,8 @@
 <script lang="ts">
 import { Board } from './components'
 import { defineComponent, ref } from 'vue'
-import type { ShipParams } from '@/types'
+import { generateShipsPlacement } from '@/helpers/helpers'
+import type { ShipPlacement } from '@/types'
 
 export default defineComponent({
   name: 'App',
@@ -16,21 +17,12 @@ export default defineComponent({
     Board
   },
   setup() {
-    const myShips = ref<ShipParams[]>([
-      {
-        position: { x: 1, y: 0 },
-        size: 3,
-        direction: 'vertical'
-      },
-      {
-        position: { x: 5, y: 5 },
-        size: 2,
-        direction: 'horizontal'
-      }
-    ])
+    const ships = ref<ShipPlacement[]>(
+      generateShipsPlacement({ x: 10, y: 10 }, [4, 3, 3, 2, 2, 2, 1, 1, 1, 1])
+    )
 
     return {
-      myShips
+      ships
     }
   }
 })

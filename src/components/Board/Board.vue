@@ -19,13 +19,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import type { PropType } from 'vue'
-import type { Coords, ShipParams } from '@/types'
+import type { Coords, ShipPlacement } from '@/types'
 import Ship from '@/components/Ship/Ship.vue'
 
 export default defineComponent({
   props: {
     ships: {
-      type: Array as PropType<ShipParams[]>,
+      type: Array as PropType<ShipPlacement[]>,
       required: true
     }
   },
