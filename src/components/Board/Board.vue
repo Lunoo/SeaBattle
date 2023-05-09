@@ -2,8 +2,8 @@
   <div class="board">
     <div class="board--row" v-for="(_, y) in boardSize.y" :key="y">
       <label class="board--row-label">{{ String.fromCharCode(65 + y) }}</label>
-      <div class="board--field" v-for="(_, x) in boardSize.x" :key="x">
-        <label v-if="y === 0" class="board--field-label">{{ x + 1 }}</label>
+      <div class="board--cell" v-for="(_, x) in boardSize.x" :key="x">
+        <label v-if="y === 0" class="board--cell-label">{{ x + 1 }}</label>
       </div>
     </div>
     <Ship
@@ -16,25 +16,21 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { defineProps } from 'vue'
 import type { PropType } from 'vue'
 import type { Coords, ShipPlacement } from '@/types'
 import Ship from '@/components/Ship/Ship.vue'
 
-export default defineComponent({
-  props: {
-    boardSize: {
-      type: Object as PropType<Coords>,
-      required: true
-    },
-    ships: {
-      type: Array as PropType<ShipPlacement[]>,
-      required: true
-    }
+defineProps({
+  boardSize: {
+    type: Object as PropType<Coords>,
+    required: true
   },
-  name: 'Board',
-  components: { Ship }
+  ships: {
+    type: Array as PropType<ShipPlacement[]>,
+    required: true
+  }
 })
 </script>
 

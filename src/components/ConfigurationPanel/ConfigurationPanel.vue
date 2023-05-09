@@ -4,12 +4,5 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'ConfigurationPanel'
-})
-</script>
-
+<script lang="ts" setup />
 <style scoped src="./ConfigurationPanel.less" />
