@@ -1,7 +1,3 @@
-<template>
-  <div :class="`ship ship--${direction}`" :style="styles"></div>
-</template>
-
 <script lang="ts" setup>
 import { computed, defineProps } from 'vue'
 import type { PropType } from 'vue'
@@ -30,4 +26,7 @@ const styles = computed(() => ({
 }))
 </script>
 
+<template>
+  <div :class="`ship ship--${direction}`" :style="styles"></div>
+</template>
 <style scoped src="./Ship.less" />

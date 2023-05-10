@@ -1,4 +1,4 @@
-import type { Coords, Direction, ShipPlacement } from '@/types'
+import type { BoardState, Coords, Direction, ShipPlacement } from '@/types'
 
 const generateEmptyBoard = (boardSize: Coords) => {
   const board: Coords[] = []
@@ -14,8 +14,19 @@ const generateEmptyBoard = (boardSize: Coords) => {
 
 const coordsMatches = (cell: Coords, cell2: Coords) => cell.x === cell2.x && cell.y === cell2.y
 
-const coordsNearby = (cell: Coords, cell2: Coords) =>
-  Math.abs(cell.x - cell2.x) < 2 && Math.abs(cell.y - cell2.y) < 2
+const getShipCells = (ship: ShipPlacement) => {
+  const cells: Coords[] = []
+  const xMax = ship.direction === 'horizontal' ? ship.position.x + ship.size - 1 : ship.position.x
+  const yMax = ship.direction === 'vertical' ? ship.position.y + ship.size - 1 : ship.position.y
+
+  for (let y = ship.position.y; y <= yMax; y++) {
+    for (let x = ship.position.x; x <= xMax; x++) {
+      cells.push({ x, y })
+    }
+  }
+
+  return cells
+}
 
 const getShipNearbyCells = (ship: ShipPlacement) => {
   const cells: Coords[] = []
@@ -31,7 +42,7 @@ const getShipNearbyCells = (ship: ShipPlacement) => {
   return cells
 }
 
-export const checkIfShipCanBePlaced = (
+const checkIfShipCanBePlaced = (
   { direction, position, size }: ShipPlacement,
   freeCells: Coords[]
 ) =>
@@ -42,6 +53,13 @@ export const checkIfShipCanBePlaced = (
     }
 
     return freeCells.find((cell) => coordsMatches(cell, coordsToCheck))
+  })
+
+const checkIfPlayerHitTheShip = (shipPlacement: ShipPlacement[], coords: Coords) =>
+  !!shipPlacement.find((ship) => {
+    const shipCells = getShipCells(ship)
+
+    return shipCells.find((cell) => coordsMatches(cell, coords))
   })
 
 export const getRandomCell = (cells: Coords[]) => {
@@ -118,4 +136,24 @@ export const generateShipsPlacement = (
   } else {
     return shipsPlacement
   }
+}
+
+export const initBoard = (
+  boardSize: Coords,
+  shipsPlacement: ShipPlacement[],
+  player: string
+): BoardState => {
+  const board: BoardState = {
+    cells: [],
+    player,
+    hidden: player === 'Player 2'
+  }
+  for (let y = 0; y < boardSize.y; y++) {
+    for (let x = 0; x < boardSize.x; x++) {
+      const occupied = checkIfPlayerHitTheShip(shipsPlacement, { x, y })
+      board.cells.push({ x, y, occupied, hit: false, missed: false, notAvailable: false })
+    }
+  }
+
+  return board
 }
