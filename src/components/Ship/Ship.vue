@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, defineProps } from 'vue'
+import { computed } from 'vue'
 import type { PropType } from 'vue'
 import type { Coords, Direction } from '@/types'
 

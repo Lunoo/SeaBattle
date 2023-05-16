@@ -18,25 +18,13 @@
     }
   }
 
-  &--cell {
-    width: var(--cellSize);
-    height: var(--cellSize);
-    border: 1px solid #000;
+  &--cell-label {
+    width: 100%;
+    position: absolute;
+    top: -25px;
+    left: 0;
     text-align: center;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background-color: #cccefa;
-    }
-
-    &-label {
-      width: 100%;
-      position: absolute;
-      top: -25px;
-      left: 0;
-      text-align: center;
-      color: #fff;
-      pointer-events: none;
-    }
+    color: #fff;
+    pointer-events: none;
   }
 }

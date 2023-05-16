@@ -3,7 +3,9 @@ export interface Coords {
   y: number
 }
 
-export interface Cell extends Coords {
+export interface Cell {
+  x: number
+  y: number
   hit: boolean
   missed: boolean
   notAvailable: boolean
@@ -11,7 +13,7 @@ export interface Cell extends Coords {
 }
 
 export interface BoardState {
-  cells: Cell[]
+  cells: Map<string, Cell>
   player: string
   hidden?: boolean
 }

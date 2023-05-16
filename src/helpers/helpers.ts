@@ -12,7 +12,10 @@ const generateEmptyBoard = (boardSize: Coords) => {
   return board
 }
 
-const coordsMatches = (cell: Coords, cell2: Coords) => cell.x === cell2.x && cell.y === cell2.y
+export const coordsMatches = (cell: Coords, cell2: Coords) =>
+  cell.x === cell2.x && cell.y === cell2.y
+
+export const coordsToString = ({ x, y }: Coords) => `${x}:${y}`
 
 const getShipCells = (ship: ShipPlacement) => {
   const cells: Coords[] = []
@@ -144,14 +147,21 @@ export const initBoard = (
   player: string
 ): BoardState => {
   const board: BoardState = {
-    cells: [],
+    cells: new Map(),
     player,
     hidden: player === 'Player 2'
   }
   for (let y = 0; y < boardSize.y; y++) {
     for (let x = 0; x < boardSize.x; x++) {
       const occupied = checkIfPlayerHitTheShip(shipsPlacement, { x, y })
-      board.cells.push({ x, y, occupied, hit: false, missed: false, notAvailable: false })
+      board.cells.set(`${x}:${y}`, {
+        x,
+        y,
+        occupied,
+        hit: false,
+        missed: false,
+        notAvailable: false
+      })
     }
   }
 
