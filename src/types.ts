@@ -15,13 +15,16 @@ export interface Cell {
 export interface BoardState {
   cells: Map<string, Cell>
   player: string
+  disabled?: boolean
   hidden?: boolean
 }
 
 export type Direction = 'vertical' | 'horizontal'
 
 export interface ShipPlacement {
+  index: number
   direction: Direction
   position: Coords
   size: number
+  destroyed?: boolean
 }

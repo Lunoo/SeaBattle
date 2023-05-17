@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { Board, ConfigurationPanel, TheHeader } from './components'
-import { ref } from 'vue'
-import { coordsToString, generateShipsPlacement, initBoard } from '@/helpers/helpers'
 import type { BoardState, Coords, ShipPlacement } from '@/types'
+import { generateShipsPlacement, initBoard, shootCell } from '@/helpers/helpers'
+import { PLAYERS } from '@/contants'
+import { ref } from 'vue'
 
 const boardSize: Coords = { x: 10, y: 10 }
 const playerOneBoard = ref<BoardState>({
@@ -15,6 +16,7 @@ const playerTwoBoard = ref<BoardState>({
 })
 const shipSizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
 const playerOneShips = ref<ShipPlacement[]>([])
+const playerTwoShips = ref<ShipPlacement[]>([])
 
 const createNewGame = () => {
   // Generate initial ships placement for the Player 1. He can change it, if he want.
@@ -23,19 +25,16 @@ const createNewGame = () => {
 
 const startGame = () => {
   // Generate initial ships placement for the Player 2.
-  const playerTwoShipsPlacement = generateShipsPlacement(boardSize, shipSizes)
+  playerTwoShips.value = generateShipsPlacement(boardSize, shipSizes)
   // Initialize the board for both players.
-  playerOneBoard.value = initBoard(boardSize, playerOneShips.value, 'Player 1')
-  playerTwoBoard.value = initBoard(boardSize, playerTwoShipsPlacement, 'Player 2')
+  playerOneBoard.value = initBoard(boardSize, playerOneShips.value, PLAYERS.playerOne)
+  playerTwoBoard.value = initBoard(boardSize, playerTwoShips.value, PLAYERS.playerTwo)
 }
 
-const shootCell = (coords: Coords) => {
-  const value = playerOneBoard.value.cells.get(coordsToString(coords))!
-  playerOneBoard.value.cells.set(coordsToString(coords), {
-    ...value,
-    hit: value.occupied,
-    missed: !value.occupied
-  })
+const handlePlayerOneShoot = (cell: Coords) => {
+  const { board, ships } = shootCell(boardSize, playerOneBoard.value, playerOneShips.value, cell)
+  playerOneBoard.value = board
+  playerOneShips.value = ships
 }
 </script>
 
@@ -46,7 +45,7 @@ const shootCell = (coords: Coords) => {
       :board-size="boardSize"
       :board-state="playerOneBoard"
       :ships="playerOneShips"
-      @shoot-cell="shootCell"
+      @shoot-cell="handlePlayerOneShoot"
     />
     <board :board-size="boardSize" :board-state="playerTwoBoard" :ships="[]" />
   </main>

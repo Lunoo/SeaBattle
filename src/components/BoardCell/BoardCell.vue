@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
 import type { Cell } from '@/types'
+import type { PropType } from 'vue'
 
 defineProps({
   cellData: {

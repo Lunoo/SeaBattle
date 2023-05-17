@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { PropType } from 'vue'
 import type { BoardState as BoardStateType, Coords, ShipPlacement } from '@/types'
-import Ship from '@/components/Ship/Ship.vue'
 import BoardCell from '@/components/BoardCell/BoardCell.vue'
+import type { PropType } from 'vue'
+import Ship from '@/components/Ship/Ship.vue'
 import { coordsToString } from '@/helpers/helpers'
 
 const props = defineProps({

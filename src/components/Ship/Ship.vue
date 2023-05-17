@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import type { PropType } from 'vue'
 import type { Coords, Direction } from '@/types'
+import type { PropType } from 'vue'
+import { cellSize } from '@/contants'
+import { computed } from 'vue'
 
-const cellSize = 25
 const props = defineProps({
   position: {
     type: Object as PropType<Coords>,
