@@ -1,32 +1,38 @@
 <script lang="ts" setup>
-import type { Coords, Direction } from '@/types'
 import type { PropType } from 'vue'
+import type { ShipPlacement } from '@/types'
 import { cellSize } from '@/contants'
 import { computed } from 'vue'
 
 const props = defineProps({
-  position: {
-    type: Object as PropType<Coords>,
-    required: true
+  boardHidden: {
+    type: Boolean
   },
-  size: {
-    type: Number,
+  shipData: {
+    type: Object as PropType<ShipPlacement>,
     required: true
-  },
-  direction: {
-    type: String as PropType<Direction>
   }
 })
 
 const styles = computed(() => ({
-  width: props.direction === 'horizontal' ? cellSize * props.size + 'px' : `${cellSize}px`,
-  height: props.direction === 'vertical' ? cellSize * props.size + 'px' : `${cellSize}px`,
-  left: cellSize * props.position.x + 'px',
-  top: cellSize * props.position.y + 'px'
+  width:
+    props.shipData.direction === 'horizontal'
+      ? cellSize * props.shipData.size + 'px'
+      : `${cellSize}px`,
+  height:
+    props.shipData.direction === 'vertical'
+      ? cellSize * props.shipData.size + 'px'
+      : `${cellSize}px`,
+  left: cellSize * props.shipData.position.x + 'px',
+  top: cellSize * props.shipData.position.y + 'px'
 }))
 </script>
 
 <template>
-  <div :class="`ship ship--${direction}`" :style="styles"></div>
+  <div
+    v-if="shipData.destroyed || !boardHidden"
+    :class="`ship ship--${shipData.direction}`"
+    :style="styles"
+  ></div>
 </template>
 <style scoped src="./Ship.less" />

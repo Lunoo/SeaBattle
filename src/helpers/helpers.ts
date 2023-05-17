@@ -177,7 +177,7 @@ export const initBoard = (
     cells: new Map(),
     player,
     hidden: player === PLAYERS.playerTwo,
-    disabled: true
+    disabled: player === PLAYERS.playerOne
   }
   for (let y = 0; y < boardSize.y; y++) {
     for (let x = 0; x < boardSize.x; x++) {
@@ -234,8 +234,8 @@ export const shootCell = (
           newCells.get(coordsToString(cell))?.hit
       )
 
-    newShips = markShipAsDestroyed(ships, targetShip)
     if (isShipDestroyed) {
+      newShips = markShipAsDestroyed(ships, targetShip)
       newCells = markUnavailableCellsAfterDestructionOfShip(boardSize, newCells, targetShip)
     }
   }

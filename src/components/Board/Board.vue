@@ -11,8 +11,7 @@ const props = defineProps({
     required: true
   },
   boardState: {
-    type: Object as PropType<BoardStateType>,
-    required: true
+    type: Object as PropType<BoardStateType>
   },
   ships: {
     type: Array as PropType<ShipPlacement[]>,
@@ -20,11 +19,16 @@ const props = defineProps({
   }
 })
 
-const getCellData = (cell: Coords) => props.boardState.cells.get(coordsToString(cell))
+const getCellData = (cell: Coords) => props.boardState?.cells.get(coordsToString(cell))
 </script>
 
 <template>
-  <div class="board">
+  <div
+    :class="{
+      board: true,
+      'board-disabled': !boardState || boardState.disabled
+    }"
+  >
     <div class="board--row" v-for="(_, y) in boardSize.y" :key="y">
       <label class="board--row-label">{{ String.fromCharCode(65 + y) }}</label>
       <board-cell
@@ -39,9 +43,8 @@ const getCellData = (cell: Coords) => props.boardState.cells.get(coordsToString(
     <ship
       v-for="(ship, i) in ships"
       :key="i"
-      :direction="ship.direction"
-      :position="ship.position"
-      :size="ship.size"
+      :board-hidden="boardState?.hidden"
+      :ship-data="ship"
     />
   </div>
 </template>
