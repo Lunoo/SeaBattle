@@ -1,10 +1,11 @@
-import type { BoardState, Cell, Coords, Direction, ShipPlacement } from '@/types'
+import type { BoardState, Cell, Coords, ShipPlacement } from '@/types'
+import { DIRECTION, PLAYERS, SHIP } from '@/contants'
 import {
   changeCellState,
   markShipAsDestroyed,
+  markShipAsWounded,
   markUnavailableCellsAfterDestructionOfShip
 } from '@/helpers/changeStateHelpers'
-import { PLAYERS } from '@/contants'
 
 const generateEmptyBoard = (boardSize: Coords) => {
   const board: Coords[] = []
@@ -85,9 +86,10 @@ export const getRandomCell = (cells: Coords[]) => {
   return cells[index]
 }
 
-const getRandomDirection = (): Direction => (Math.random() > 0.5 ? 'horizontal' : 'vertical')
-const getAnotherDirection = (direction: Direction): Direction =>
-  direction === 'horizontal' ? 'vertical' : 'horizontal'
+export const getRandomDirection = (): DIRECTION =>
+  Math.random() > 0.5 ? DIRECTION.horizontal : DIRECTION.vertical
+export const getAnotherDirection = (direction: DIRECTION): DIRECTION =>
+  direction === DIRECTION.horizontal ? DIRECTION.vertical : DIRECTION.horizontal
 
 /** Method to filter all cells under the ship including nearby cells. */
 const getFreeCellsAfterKilling = (
@@ -119,7 +121,13 @@ export const generateShipsPlacement = (
       const cell = getRandomCell(possibleStartPositionForCurrentShip)
       const direction = getRandomDirection()
 
-      const ship = { index: shipsPlacement.length, direction, position: cell, size: shipSize }
+      const ship = {
+        index: shipsPlacement.length,
+        direction,
+        position: cell,
+        size: shipSize,
+        status: SHIP.alive
+      }
       const isShipCanBePlaced = checkIfShipCanBePlaced(ship, freeCells)
       if (isShipCanBePlaced) {
         // If the found cell and the direction are suitable, add it to the final array
@@ -133,7 +141,8 @@ export const generateShipsPlacement = (
           index: shipsPlacement.length,
           direction: getAnotherDirection(direction),
           position: cell,
-          size: shipSize
+          size: shipSize,
+          status: SHIP.alive
         }
         const isShip2CanBePlaced = checkIfShipCanBePlaced(
           ship2,
@@ -237,6 +246,8 @@ export const shootCell = (
     if (isShipDestroyed) {
       newShips = markShipAsDestroyed(ships, targetShip)
       newCells = markUnavailableCellsAfterDestructionOfShip(boardSize, newCells, targetShip)
+    } else {
+      newShips = markShipAsWounded(ships, targetShip)
     }
   }
 

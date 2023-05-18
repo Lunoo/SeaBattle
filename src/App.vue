@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { Board, ConfigurationPanel, TheHeader } from './components'
 import type { BoardState, Coords, ShipPlacement } from '@/types'
-import { GAME, PLAYERS } from '@/contants'
-import { generateShipsPlacement, initBoard, shootCell } from '@/helpers/helpers'
+import { GAME, PLAYERS, SHIP } from '@/contants'
+import { findStepEasy, generateShipsPlacement, initBoard, shootCell } from '@/helpers'
 import { ref } from 'vue'
 
 const gameStatus = ref<GAME>(GAME.initialization)
@@ -22,6 +22,8 @@ const createNewGame = () => {
   }
   // Generate initial ships placement for the Player 1. He can change it, if he want.
   playerOneShips.value = generateShipsPlacement(boardSize, shipSizes)
+  playerTwoBoard.value = undefined
+  playerTwoShips.value = []
 }
 
 const startGame = () => {
@@ -52,6 +54,26 @@ const handlePlayerTwoShoot = (cell: Coords) => {
   playerTwoBoard.value = board
   playerTwoShips.value = ships
 }
+
+const handleEnemyTurn = () => {
+  if (!playerTwoBoard.value) {
+    return
+  }
+
+  const cell = findStepEasy(boardSize, playerTwoBoard.value, playerTwoShips.value)
+  if (!cell) {
+    return
+  }
+
+  const { board, ships } = shootCell(boardSize, playerTwoBoard.value, playerTwoShips.value, cell)
+  playerTwoBoard.value = board
+  playerTwoShips.value = ships
+
+  const shipsLeft = ships.filter((ship) => ship.status !== SHIP.destroyed)
+  if (shipsLeft.length === 0) {
+    gameStatus.value = GAME.finish
+  }
+}
 </script>
 
 <template>
@@ -74,6 +96,7 @@ const handlePlayerTwoShoot = (cell: Coords) => {
     :game-status="gameStatus"
     @new-game="createNewGame"
     @start-game="startGame"
+    @enemy-turn="handleEnemyTurn"
   />
 </template>
 <style src="./App.less" />

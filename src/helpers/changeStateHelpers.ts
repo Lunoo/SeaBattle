@@ -1,11 +1,22 @@
 import type { Cell, Coords, ShipPlacement } from '@/types'
 import { coordsToString, getShipNearbyCells } from '@/helpers/helpers'
+import { SHIP } from '@/contants'
+
+export const markShipAsWounded = (ships: ShipPlacement[], ship: ShipPlacement) => {
+  const newShips = [...ships]
+  newShips[ship.index] = {
+    ...newShips[ship.index],
+    status: SHIP.wounded
+  }
+
+  return newShips
+}
 
 export const markShipAsDestroyed = (ships: ShipPlacement[], ship: ShipPlacement) => {
   const newShips = [...ships]
   newShips[ship.index] = {
     ...newShips[ship.index],
-    destroyed: true
+    status: SHIP.destroyed
   }
 
   return newShips

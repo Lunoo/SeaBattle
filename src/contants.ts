@@ -10,3 +10,14 @@ export enum GAME {
   start = 'start',
   finish = 'finish'
 }
+
+export enum SHIP {
+  alive = 'alive',
+  wounded = 'wounded',
+  destroyed = 'destroyed'
+}
+
+export enum DIRECTION {
+  vertical = 'vertical',
+  horizontal = 'horizontal'
+}

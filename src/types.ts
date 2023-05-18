@@ -1,3 +1,5 @@
+import type { SHIP } from '@/contants'
+
 export interface Coords {
   x: number
   y: number
@@ -26,5 +28,5 @@ export interface ShipPlacement {
   direction: Direction
   position: Coords
   size: number
-  destroyed?: boolean
+  status: SHIP
 }
