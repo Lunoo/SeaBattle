@@ -1,4 +1,4 @@
-import type { SHIP } from '@/contants'
+import type { PLAYERS, SHIP } from '@/contants'
 
 export interface Coords {
   x: number
@@ -29,4 +29,9 @@ export interface ShipPlacement {
   position: Coords
   size: number
   status: SHIP
+}
+
+export interface Turn {
+  player: PLAYERS
+  iteration: number
 }

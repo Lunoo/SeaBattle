@@ -91,6 +91,9 @@ export const getRandomDirection = (): DIRECTION =>
 export const getAnotherDirection = (direction: DIRECTION): DIRECTION =>
   direction === DIRECTION.horizontal ? DIRECTION.vertical : DIRECTION.horizontal
 
+export const getAnotherPlayer = (player: PLAYERS): PLAYERS =>
+  player === PLAYERS.playerOne ? PLAYERS.playerTwo : PLAYERS.playerOne
+
 /** Method to filter all cells under the ship including nearby cells. */
 const getFreeCellsAfterKilling = (
   boardSize: Coords,
@@ -213,6 +216,7 @@ export const shootCell = (
 ): {
   board: BoardState
   ships: ShipPlacement[]
+  isTargetHit: boolean
 } => {
   const cellData = board.cells.get(coordsToString(coords))!
   const { hit, missed, notAvailable } = cellData
@@ -222,7 +226,8 @@ export const shootCell = (
     // then it has already been shot at and nothing needs to be done
     return {
       board,
-      ships
+      ships,
+      isTargetHit: false
     }
   }
 
@@ -256,6 +261,7 @@ export const shootCell = (
       ...board,
       cells: newCells
     },
-    ships: newShips
+    ships: newShips,
+    isTargetHit: !!targetShip
   }
 }

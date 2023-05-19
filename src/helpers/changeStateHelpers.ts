@@ -1,6 +1,6 @@
-import type { Cell, Coords, ShipPlacement } from '@/types'
-import { coordsToString, getShipNearbyCells } from '@/helpers/helpers'
-import { SHIP } from '@/contants'
+import type { Cell, Coords, ShipPlacement, Turn } from '@/types'
+import { PLAYERS, SHIP } from '@/contants'
+import { coordsToString, getAnotherPlayer, getShipNearbyCells } from '@/helpers/helpers'
 
 export const markShipAsWounded = (ships: ShipPlacement[], ship: ShipPlacement) => {
   const newShips = [...ships]
@@ -53,4 +53,22 @@ export const changeCellState = (cells: Map<string, Cell>, cellData: Cell): Map<s
   })
 
   return newCells
+}
+
+export const changeTurnState = (
+  { player, iteration }: Turn,
+  isTargetHit: boolean
+): {
+  disabled: boolean
+  turn: Turn
+} => {
+  const newPlayer = isTargetHit ? player : getAnotherPlayer(player)
+
+  return {
+    disabled: newPlayer === PLAYERS.playerTwo,
+    turn: {
+      player: newPlayer,
+      iteration: iteration++
+    }
+  }
 }

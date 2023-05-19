@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { SHIP, cellSize } from '@/contants'
 import type { PropType } from 'vue'
 import type { ShipPlacement } from '@/types'
-import { cellSize } from '@/contants'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -30,7 +30,7 @@ const styles = computed(() => ({
 
 <template>
   <div
-    v-if="shipData.destroyed || !boardHidden"
+    v-if="shipData.status === SHIP.destroyed || !boardHidden"
     :class="`ship ship--${shipData.direction}`"
     :style="styles"
   ></div>
