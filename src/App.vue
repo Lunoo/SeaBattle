@@ -1,148 +1,123 @@
 <script lang="ts" setup>
 import { Board, ConfigurationPanel, TheHeader } from './components'
-import type { BoardState, Coords, ShipPlacement, Turn } from '@/types'
-import { GAME, PLAYERS, SHIP } from '@/contants'
+import type { Configuration, Coords, Player } from '@/types'
+import { GAME, PLAYERS } from '@/contants'
 import {
-  changeTurnState,
-  coordsToString,
+  changeTurn,
+  clearBoard,
   findStepEasy,
-  generateShipsPlacement,
+  getCellData,
+  getPlayerShipsLeftNumber,
   initBoard,
   shootCell
 } from '@/helpers'
 import { ref, watch } from 'vue'
 
-const gameStatus = ref<GAME>(GAME.initialization)
-const turnData = ref<Turn>({ player: PLAYERS.playerOne, iteration: 0 })
-const boardSize: Coords = { x: 10, y: 10 }
-const playerOneBoard = ref<BoardState | undefined>()
-const playerTwoBoard = ref<BoardState | undefined>()
-const shipSizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
-const playerOneShips = ref<ShipPlacement[]>([])
-const playerTwoShips = ref<ShipPlacement[]>([])
+const config = ref<Configuration>({
+  boardSize: { x: 10, y: 10 },
+  shipSizes: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
+  status: GAME.initialization
+})
+const playerOne = ref<Player>({
+  name: PLAYERS.playerOne,
+  active: false,
+  ships: []
+})
+const playerTwo = ref<Player>({
+  name: PLAYERS.playerTwo,
+  active: false,
+  ships: []
+})
 
 const createNewGame = () => {
-  gameStatus.value = GAME.configuring
-  playerOneBoard.value = {
-    player: PLAYERS.playerOne,
-    cells: new Map(),
-    disabled: false
-  }
+  config.value.status = GAME.configuring
+  // Clear everything for both players.
+  clearBoard(config, playerOne)
+  clearBoard(config, playerTwo)
   // Generate initial ships placement for the Player 1. It can be changed.
-  playerOneShips.value = generateShipsPlacement(boardSize, shipSizes)
-  // Set initial values for Player 2.
-  playerTwoBoard.value = undefined
-  playerTwoShips.value = []
+  initBoard(config, playerOne)
+  playerOne.value.board!.disabled = false
 }
 
 const startGame = () => {
-  gameStatus.value = GAME.start
-  // Generate initial ships placement for the Player 2.
-  playerTwoShips.value = generateShipsPlacement(boardSize, shipSizes)
-  // Initialize the board for both players.
-  playerOneBoard.value = initBoard(boardSize, playerOneShips.value, PLAYERS.playerOne)
-  playerTwoBoard.value = initBoard(boardSize, playerTwoShips.value, PLAYERS.playerTwo)
+  config.value.status = GAME.start
+  // Update the board for Player 1 (in case if player changed ships placement) and initialize the board for Player 2.
+  initBoard(config, playerOne)
+  initBoard(config, playerTwo)
+  playerOne.value.active = true
 }
 
 const handlePlayerOneShoot = (cell: Coords) => {
-  if (gameStatus.value !== GAME.start || !playerTwoBoard.value || playerTwoBoard.value.disabled) {
+  if (config.value.status !== GAME.start || playerTwo.value.board?.disabled) {
     return
   }
 
-  const cellData = playerTwoBoard.value.cells.get(coordsToString(cell))
+  const cellData = getCellData(playerTwo.value.board, cell)
   if (!cellData || cellData.notAvailable) {
     return
   }
 
-  const { board, ships, isTargetHit } = shootCell(
-    boardSize,
-    playerTwoBoard.value,
-    playerTwoShips.value,
-    cell
-  )
-  playerTwoBoard.value = board
-  playerTwoShips.value = ships
-
-  const { disabled, turn } = changeTurnState(turnData.value, isTargetHit)
-  playerTwoBoard.value.disabled = disabled
-  turnData.value = turn
+  const { isTargetHit } = shootCell(config.value.boardSize, playerTwo, cell)
+  changeTurn(config, playerOne, playerTwo, isTargetHit)
 }
 
 const handlePlayerTwoShoot = (cell: Coords) => {
-  if (gameStatus.value !== GAME.start || !playerOneBoard.value || playerOneBoard.value.disabled) {
+  if (config.value.status !== GAME.start || playerOne.value.board?.disabled) {
     return
   }
 
-  const { board, ships, isTargetHit } = shootCell(
-    boardSize,
-    playerOneBoard.value,
-    playerOneShips.value,
-    cell
-  )
-  playerOneBoard.value = board
-  playerOneShips.value = ships
+  const cellData = getCellData(playerOne.value.board, cell)
+  if (!cellData || cellData.notAvailable) {
+    return
+  }
 
-  const { disabled, turn } = changeTurnState(turnData.value, isTargetHit)
-  playerTwoBoard.value!.disabled = disabled
-  turnData.value = turn
+  const { isTargetHit } = shootCell(config.value.boardSize, playerOne, cell)
+  changeTurn(config, playerOne, playerTwo, isTargetHit)
 }
 
 const handleEnemyTurn = () => {
-  if (!playerOneBoard.value) {
-    return
-  }
-
-  const cell = findStepEasy(boardSize, playerOneBoard.value, playerOneShips.value)
-  if (!cell) {
-    return
-  }
-
-  const { board, ships, isTargetHit } = shootCell(
-    boardSize,
-    playerOneBoard.value,
-    playerOneShips.value,
-    cell
-  )
-  playerOneBoard.value = board
-  playerOneShips.value = ships
-
-  const { disabled, turn } = changeTurnState(turnData.value, isTargetHit)
-  playerTwoBoard.value!.disabled = disabled
-  turnData.value = turn
+  const cell = findStepEasy(config, playerOne)
+  const { isTargetHit } = shootCell(config.value.boardSize, playerOne, cell)
+  changeTurn(config, playerOne, playerTwo, isTargetHit)
 }
 
-watch(turnData, () => {
-  if (gameStatus.value === GAME.start) {
-    const playerOneShipsLeft = playerOneShips.value.filter((ship) => ship.status !== SHIP.destroyed)
-    const playerTwoShipsLeft = playerTwoShips.value.filter((ship) => ship.status !== SHIP.destroyed)
+watch(
+  () => [playerTwo.value.active, playerOne.value.board],
+  ([isPlayerTwoActive]) => {
+    if (config.value.status === GAME.start) {
+      const playerOneShipsLeft = getPlayerShipsLeftNumber(playerOne)
+      const playerTwoShipsLeft = getPlayerShipsLeftNumber(playerTwo)
 
-    if (playerOneShipsLeft.length === 0 || playerTwoShipsLeft.length === 0) {
-      gameStatus.value = GAME.finish
-    } else if (turnData.value.player === PLAYERS.playerTwo) {
-      setTimeout(handleEnemyTurn, 500)
+      if (playerOneShipsLeft === 0 || playerTwoShipsLeft === 0) {
+        config.value.status = GAME.finish
+      } else if (isPlayerTwoActive) {
+        setTimeout(handleEnemyTurn, 500)
+      }
     }
   }
-})
+)
 </script>
 
 <template>
   <the-header />
   <main>
     <board
-      :board-size="boardSize"
-      :board-state="playerOneBoard"
-      :ships="playerOneShips"
+      :active="playerTwo.active"
+      :board-size="config.boardSize"
+      :board-state="playerOne.board"
+      :ships="playerOne.ships"
       @shoot-cell="handlePlayerTwoShoot"
     />
     <board
-      :board-size="boardSize"
-      :board-state="playerTwoBoard"
-      :ships="playerTwoShips"
+      :active="playerOne.active"
+      :board-size="config.boardSize"
+      :board-state="playerTwo.board"
+      :ships="playerTwo.ships"
       @shoot-cell="handlePlayerOneShoot"
     />
   </main>
   <configuration-panel
-    :game-status="gameStatus"
+    :game-status="config.status"
     @new-game="createNewGame"
     @start-game="startGame"
     @enemy-turn="handleEnemyTurn"

@@ -3,9 +3,13 @@ import type { BoardState as BoardStateType, Coords, ShipPlacement } from '@/type
 import BoardCell from '@/components/BoardCell/BoardCell.vue'
 import type { PropType } from 'vue'
 import Ship from '@/components/Ship/Ship.vue'
-import { coordsToString } from '@/helpers/helpers'
+import { getCellData } from '@/helpers'
 
-const props = defineProps({
+defineProps({
+  active: {
+    type: Boolean,
+    required: true
+  },
   boardSize: {
     type: Object as PropType<Coords>,
     required: true
@@ -18,15 +22,14 @@ const props = defineProps({
     required: true
   }
 })
-
-const getCellData = (cell: Coords) => props.boardState?.cells.get(coordsToString(cell))
 </script>
 
 <template>
   <div
     :class="{
       board: true,
-      'board-disabled': !boardState || boardState.disabled
+      'board-disabled': !boardState || boardState.disabled,
+      'board-active': active
     }"
   >
     <div class="board--row" v-for="(_, y) in boardSize.y" :key="y">
@@ -34,7 +37,7 @@ const getCellData = (cell: Coords) => props.boardState?.cells.get(coordsToString
       <board-cell
         v-for="(_, x) in boardSize.x"
         :key="x"
-        :cellData="getCellData({ x, y })"
+        :cellData="getCellData(boardState, { x, y })"
         @click="$emit('shoot-cell', { x, y })"
       >
         <label v-if="y === 0" class="board--cell-label">{{ x + 1 }}</label>

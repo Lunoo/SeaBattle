@@ -1,11 +1,6 @@
-import type { BoardState, Cell, Coords, ShipPlacement } from '@/types'
+import type { BoardState, Configuration, Coords, Player, ShipPlacement } from '@/types'
 import { DIRECTION, PLAYERS, SHIP } from '@/contants'
-import {
-  changeCellState,
-  markShipAsDestroyed,
-  markShipAsWounded,
-  markUnavailableCellsAfterDestructionOfShip
-} from '@/helpers/changeStateHelpers'
+import type { Ref } from 'vue'
 
 const generateEmptyBoard = (boardSize: Coords) => {
   const board: Coords[] = []
@@ -26,8 +21,10 @@ export const coordsToString = ({ x, y }: Coords) => `${x}:${y}`
 
 export const getShipCells = (ship: ShipPlacement) => {
   const cells: Coords[] = []
-  const xMax = ship.direction === 'horizontal' ? ship.position.x + ship.size - 1 : ship.position.x
-  const yMax = ship.direction === 'vertical' ? ship.position.y + ship.size - 1 : ship.position.y
+  const xMax =
+    ship.direction === DIRECTION.horizontal ? ship.position.x + ship.size - 1 : ship.position.x
+  const yMax =
+    ship.direction === DIRECTION.vertical ? ship.position.y + ship.size - 1 : ship.position.y
 
   for (let y = ship.position.y; y <= yMax; y++) {
     for (let x = ship.position.x; x <= xMax; x++) {
@@ -43,12 +40,12 @@ export const getShipNearbyCells = (boardSize: Coords, ship: ShipPlacement) => {
   const xMin = Math.max(0, ship.position.x - 1)
   const xMax = Math.min(
     boardSize.x - 1,
-    ship.direction === 'horizontal' ? ship.position.x + ship.size : ship.position.x + 1
+    ship.direction === DIRECTION.horizontal ? ship.position.x + ship.size : ship.position.x + 1
   )
   const yMin = Math.max(0, ship.position.y - 1)
   const yMax = Math.min(
     boardSize.y - 1,
-    ship.direction === 'vertical' ? ship.position.y + ship.size : ship.position.y + 1
+    ship.direction === DIRECTION.vertical ? ship.position.y + ship.size : ship.position.y + 1
   )
 
   for (let y = yMin; y <= yMax; y++) {
@@ -66,14 +63,14 @@ const checkIfShipCanBePlaced = (
 ) =>
   Array.from(Array(size).keys()).every((i) => {
     const coordsToCheck = {
-      x: direction === 'horizontal' ? position.x + i : position.x,
-      y: direction === 'vertical' ? position.y + i : position.y
+      x: direction === DIRECTION.horizontal ? position.x + i : position.x,
+      y: direction === DIRECTION.vertical ? position.y + i : position.y
     }
 
     return freeCells.find((cell) => coordsMatches(cell, coordsToCheck))
   })
 
-const checkIfPlayerHitTheShip = (shipPlacement: ShipPlacement[], coords: Coords) =>
+export const checkIfPlayerHitTheShip = (shipPlacement: ShipPlacement[], coords: Coords) =>
   shipPlacement.find((ship) => {
     const shipCells = getShipCells(ship)
 
@@ -102,24 +99,27 @@ const getFreeCellsAfterKilling = (
 ): Coords[] => {
   const nearbyCells = getShipNearbyCells(boardSize, ship)
   // Set with unique coordinates. Created to optimize filtering.
-  const cellsToRemove = new Set(nearbyCells.map((cell) => `${cell.x}:${cell.y}`))
+  const cellsToRemove = new Set(nearbyCells.map((cell) => coordsToString(cell)))
 
-  return freeCells.filter((cell) => !cellsToRemove.has(`${cell.x}:${cell.y}`))
+  return freeCells.filter((cell) => !cellsToRemove.has(coordsToString(cell)))
 }
 
-export const generateShipsPlacement = (
-  boardSize: Coords,
-  shipsSizes: number[]
-): ShipPlacement[] => {
+const generateShipsPlacement = ({
+  value: { boardSize, shipSizes }
+}: Ref<Configuration>): ShipPlacement[] => {
   const shipsPlacement: ShipPlacement[] = []
   // cells available for placing ship
   let freeCells = generateEmptyBoard(boardSize)
-  let error: string | undefined
 
-  shipsSizes.forEach((shipSize) => {
+  shipSizes.forEach((shipSize) => {
     let possibleStartPositionForCurrentShip = [...freeCells]
 
-    while (!error) {
+    // If there are no more free cells, a board with such a configuration cannot be created.
+    if (freeCells.length === 0) {
+      throw "Can't generate board!"
+    }
+
+    while (possibleStartPositionForCurrentShip.length !== 0) {
       // Looking for a potential place for the ship
       const cell = getRandomCell(possibleStartPositionForCurrentShip)
       const direction = getRandomDirection()
@@ -165,35 +165,38 @@ export const generateShipsPlacement = (
 
       // If there are no more free cells, a board with such a configuration cannot be created.
       if (possibleStartPositionForCurrentShip.length === 0) {
-        error = "Can't generate board!"
-
-        break
+        throw "Can't generate board!"
       }
     }
   })
 
-  if (error) {
-    console.error(error)
-    return []
-  } else {
-    return shipsPlacement
+  return shipsPlacement
+}
+
+export const clearBoard = (config: Ref<Configuration>, player: Ref<Player>) => {
+  player.value = {
+    ...player.value,
+    board: undefined,
+    ships: []
   }
 }
 
 export const initBoard = (
-  boardSize: Coords,
-  shipsPlacement: ShipPlacement[],
-  player: string
-): BoardState => {
+  config: Ref<Configuration>,
+  player: Ref<Player>,
+  ships?: ShipPlacement[]
+) => {
   const board: BoardState = {
     cells: new Map(),
-    player,
-    hidden: player === PLAYERS.playerTwo,
-    disabled: player === PLAYERS.playerOne
+    hidden: player.value.name === PLAYERS.playerTwo,
+    disabled: player.value.name === PLAYERS.playerOne
   }
-  for (let y = 0; y < boardSize.y; y++) {
-    for (let x = 0; x < boardSize.x; x++) {
-      const occupied = !!checkIfPlayerHitTheShip(shipsPlacement, { x, y })
+  const playerShips =
+    ships ?? player.value.ships.length ? player.value.ships : generateShipsPlacement(config)
+
+  for (let y = 0; y < config.value.boardSize.y; y++) {
+    for (let x = 0; x < config.value.boardSize.x; x++) {
+      const occupied = !!checkIfPlayerHitTheShip(playerShips, { x, y })
       board.cells.set(`${x}:${y}`, {
         x,
         y,
@@ -205,63 +208,15 @@ export const initBoard = (
     }
   }
 
-  return board
-}
-
-export const shootCell = (
-  boardSize: Coords,
-  board: BoardState,
-  ships: ShipPlacement[],
-  coords: Coords
-): {
-  board: BoardState
-  ships: ShipPlacement[]
-  isTargetHit: boolean
-} => {
-  const cellData = board.cells.get(coordsToString(coords))!
-  const { hit, missed, notAvailable } = cellData
-
-  if (hit || missed || notAvailable) {
-    // if the status of the target cell differs from the default,
-    // then it has already been shot at and nothing needs to be done
-    return {
-      board,
-      ships,
-      isTargetHit: false
-    }
-  }
-
-  const targetShip = checkIfPlayerHitTheShip(ships, coords)
-  let newShips: ShipPlacement[] = ships
-  // change the status of the target cell
-  let newCells: Map<string, Cell> = changeCellState(board.cells, cellData)
-
-  if (targetShip) {
-    const shipCells = getShipCells(targetShip)
-    const isShipDestroyed =
-      // If the ship has not yet been destroyed, we need to check all its cells:
-      shipCells.every(
-        // their coordinates either match the cell they are shooting at
-        (cell) =>
-          coordsMatches(cell, coords) ||
-          // or the cell has already been shot before
-          newCells.get(coordsToString(cell))?.hit
-      )
-
-    if (isShipDestroyed) {
-      newShips = markShipAsDestroyed(ships, targetShip)
-      newCells = markUnavailableCellsAfterDestructionOfShip(boardSize, newCells, targetShip)
-    } else {
-      newShips = markShipAsWounded(ships, targetShip)
-    }
-  }
-
-  return {
-    board: {
-      ...board,
-      cells: newCells
-    },
-    ships: newShips,
-    isTargetHit: !!targetShip
+  player.value = {
+    ...player.value,
+    board: board,
+    ships: playerShips
   }
 }
+
+export const getCellData = (board: BoardState | undefined, coords: Coords) =>
+  board?.cells.get(coordsToString(coords))
+
+export const getPlayerShipsLeftNumber = (player: Ref<Player>) =>
+  player.value.ships.filter((ship) => ship.status !== SHIP.destroyed).length

@@ -3,8 +3,9 @@
   background-color: #fff;
   border: 3px solid #fff;
   border-radius: 5px;
-  box-shadow: 0 0 5px 1px #fff;
+  box-shadow: 0 0 7px 2px transparent;
   position: relative;
+  transition: box-shadow 0.3s;
 
   &--row {
     display: flex;
@@ -28,5 +29,9 @@
     text-align: center;
     color: #fff;
     pointer-events: none;
+  }
+
+  &-active {
+    box-shadow: 0 0 7px 2px #fff;
   }
 }

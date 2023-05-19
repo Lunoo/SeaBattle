@@ -1,4 +1,4 @@
-import type { PLAYERS, SHIP } from '@/contants'
+import type { DIRECTION, GAME, PLAYERS, SHIP } from '@/contants'
 
 export interface Coords {
   x: number
@@ -16,16 +16,13 @@ export interface Cell {
 
 export interface BoardState {
   cells: Map<string, Cell>
-  player: string
   disabled?: boolean
   hidden?: boolean
 }
 
-export type Direction = 'vertical' | 'horizontal'
-
 export interface ShipPlacement {
   index: number
-  direction: Direction
+  direction: DIRECTION
   position: Coords
   size: number
   status: SHIP
@@ -34,4 +31,17 @@ export interface ShipPlacement {
 export interface Turn {
   player: PLAYERS
   iteration: number
+}
+
+export interface Player {
+  name: PLAYERS
+  active: boolean
+  board?: BoardState
+  ships: ShipPlacement[]
+}
+
+export interface Configuration {
+  boardSize: Coords
+  shipSizes: number[]
+  status: GAME
 }

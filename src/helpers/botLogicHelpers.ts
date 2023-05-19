@@ -1,23 +1,25 @@
-import type { BoardState, Cell, Coords, ShipPlacement } from '@/types'
+import type { BoardState, Cell, Configuration, Coords, Player, ShipPlacement } from '@/types'
 import { DIRECTION, SHIP } from '@/contants'
 import {
-  coordsToString,
   getAnotherDirection,
+  getCellData,
   getRandomCell,
   getRandomDirection,
   getShipNearbyCells
 } from '@/helpers/helpers'
+import type { Ref } from 'vue'
 
 const findBurningCells = (boardSize: Coords, board: BoardState, ship: ShipPlacement) => {
   const nearByCells = getShipNearbyCells(boardSize, ship)
 
   return nearByCells.filter((cell) => {
-    const cellData = board.cells.get(coordsToString(cell))!
+    const cellData = getCellData(board, cell)
 
-    return cellData.hit
+    return cellData?.hit
   })
 }
 
+// TODO: simplify this method, add comments
 const findNextPossibleCellUnderShip = (
   board: BoardState,
   startCell: Coords,
@@ -33,7 +35,7 @@ const findNextPossibleCellUnderShip = (
       x: searchStartCell.x + (shipDirection === DIRECTION.horizontal ? searchDirection : 0),
       y: searchStartCell.y + (shipDirection === DIRECTION.vertical ? searchDirection : 0)
     }
-    const nextCellData = board.cells.get(coordsToString(nextCell))
+    const nextCellData = getCellData(board, nextCell)
 
     if (!nextCellData || nextCellData.missed || (nextCellData.notAvailable && !nextCellData.hit)) {
       if (!searchDirectionChanged) {
@@ -62,7 +64,6 @@ export const attemptToKillShip = (boardSize: Coords, board: BoardState, ship: Sh
     return findNextPossibleCellUnderShip(board, burningCells[0], shipDirection)
   } else {
     const shipDirection = getRandomDirection()
-
     const nextCell = findNextPossibleCellUnderShip(board, burningCells[0], shipDirection)
 
     if (nextCell) {
@@ -77,7 +78,14 @@ export const attemptToKillShip = (boardSize: Coords, board: BoardState, ship: Sh
   }
 }
 
-export const findStepEasy = (boardSize: Coords, board: BoardState, ships: ShipPlacement[]) => {
+export const findStepEasy = (
+  { value: { boardSize } }: Ref<Configuration>,
+  { value: { board, ships } }: Ref<Player>
+): Coords => {
+  if (!board) {
+    throw 'CPU board is not initialized'
+  }
+
   // check if there are wounded but not destroyed ships
   const woundedShip = ships.find((ship) => ship.status === SHIP.wounded)
 
@@ -85,7 +93,7 @@ export const findStepEasy = (boardSize: Coords, board: BoardState, ships: ShipPl
     const step = attemptToKillShip(boardSize, board, woundedShip)
 
     if (!step) {
-      console.error('Wounded ship should has at least 1 untouched nearby cell.')
+      throw 'Wounded ship should has at least 1 untouched nearby cell.'
     }
 
     return step
