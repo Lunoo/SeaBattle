@@ -1,11 +1,28 @@
 .board {
-  margin: auto;
   background-color: #fff;
   border: 3px solid #fff;
   border-radius: 5px;
   box-shadow: 0 0 7px 2px transparent;
   position: relative;
   transition: box-shadow 0.3s;
+
+  &--player {
+    margin: auto;
+  }
+
+  &--container {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  &--header {
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #fff;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+  }
 
   &--row {
     display: flex;
@@ -33,5 +50,9 @@
 
   &-active {
     box-shadow: 0 0 7px 2px #fff;
+  }
+
+  .ship {
+    position: absolute;
   }
 }

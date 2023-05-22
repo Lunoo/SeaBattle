@@ -1,0 +1,32 @@
+.board--summary {
+  margin-top: -20px;
+  margin-left: 20px;
+  color: #fff;
+
+  .ship {
+    margin-right: 5px;
+  }
+
+  .ship--container {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+  }
+}
+
+h5 {
+  margin-bottom: 5px;
+  font-size: 13px;
+
+  &.board--summary-left {
+    color: #44d444;
+  }
+
+  &.board--summary-destroyed {
+    color: #fd3b3b;
+
+    .ship--container + & {
+      margin-top: 20px;
+    }
+  }
+}

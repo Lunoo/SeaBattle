@@ -101,26 +101,13 @@ watch(
 <template>
   <the-header />
   <main>
-    <board
-      :active="playerTwo.active"
-      :board-size="config.boardSize"
-      :board-state="playerOne.board"
-      :ships="playerOne.ships"
-      @shoot-cell="handlePlayerTwoShoot"
-    />
-    <board
-      :active="playerOne.active"
-      :board-size="config.boardSize"
-      :board-state="playerTwo.board"
-      :ships="playerTwo.ships"
-      @shoot-cell="handlePlayerOneShoot"
-    />
+    <board :config="config" :player="playerOne" @shoot-cell="handlePlayerTwoShoot" />
+    <board :config="config" :player="playerTwo" @shoot-cell="handlePlayerOneShoot" />
   </main>
   <configuration-panel
     :game-status="config.status"
     @new-game="createNewGame"
     @start-game="startGame"
-    @enemy-turn="handleEnemyTurn"
   />
 </template>
 <style src="./App.less" />
