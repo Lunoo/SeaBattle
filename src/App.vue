@@ -20,7 +20,7 @@ const generateConfig = (type: BOARD_TYPES) => ({
   status: GAME.initialization
 })
 
-const config = ref<Configuration>(generateConfig(BOARD_TYPES.small))
+const config = ref<Configuration>(generateConfig(BOARD_TYPES.default))
 const playerOne = ref<Player>({
   name: PLAYERS.playerOne,
   active: false,

@@ -15,10 +15,10 @@ defineEmits(['click'])
 <template>
   <div
     :class="{
-      'board--cell': true,
-      'board--cell-hit': cellData.hit,
-      'board--cell-missed': cellData.missed,
-      'board--cell-notAvailable': cellData.notAvailable
+      'board-cell': true,
+      'board-cell--hit': cellData.hit,
+      'board-cell--missed': cellData.missed,
+      'board-cell--notAvailable': cellData.notAvailable
     }"
     @click="$emit('click')"
   >

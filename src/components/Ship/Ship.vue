@@ -29,7 +29,7 @@ const styles = computed(() => ({
     :class="`ship ship--${direction ?? shipData.direction}`"
     :style="styles"
   >
-    <span class="ship--cell" v-for="(_, i) in shipData.size" :key="i" />
+    <span class="ship__cell" v-for="(_, i) in shipData.size" :key="i" />
   </div>
 </template>
 <style scoped src="./Ship.less" />

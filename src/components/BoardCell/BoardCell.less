@@ -1,4 +1,4 @@
-.board--cell {
+.board-cell {
   position: relative;
   width: var(--cellSize);
   height: var(--cellSize);
@@ -21,7 +21,7 @@
     right: 0;
   }
 
-  &-notAvailable {
+  &--notAvailable {
     &:before {
       content: "";
       position: absolute;
@@ -35,7 +35,7 @@
     }
   }
 
-  &-hit {
+  &--hit {
     background: url("../../assets/fire.png") no-repeat center;
     background-size: cover;
 
@@ -44,7 +44,7 @@
     }
   }
 
-  &-missed {
+  &--missed {
     //background: url("../../assets/ripple.png") no-repeat center;
     //background-size: 80%;
 

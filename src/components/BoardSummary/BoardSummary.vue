@@ -54,20 +54,20 @@ const getDummyShipData = (index: number, size: number): ShipPlacement => ({
 </script>
 
 <template>
-  <div :class="`board--summary ${shouldShow ? 'board--summary-opened' : ''} board-${boardType}`">
-    <div class="board--summary-inner">
-      <h5 v-if="shipsTotal.shipsLeft.size > 0" class="board--summary-left">Left:</h5>
+  <div :class="`board-summary ${shouldShow ? 'board-summary--opened' : ''} board--${boardType}`">
+    <div class="board-summary__inner">
+      <h5 v-if="shipsTotal.shipsLeft.size > 0" class="board-summary--left">Left:</h5>
       <div
-        class="ship--container"
+        class="ship__container"
         v-for="([size, shipsNumber], i) in shipsTotal.shipsLeft.entries()"
         :key="i"
       >
         <ship :ship-data="getDummyShipData(i, size)" :direction="DIRECTION.horizontal" />
         x {{ shipsNumber }}
       </div>
-      <h5 v-if="shipsTotal.shipsDestroyed.size > 0" class="board--summary-destroyed">Destroyed:</h5>
+      <h5 v-if="shipsTotal.shipsDestroyed.size > 0" class="board-summary--destroyed">Destroyed:</h5>
       <div
-        class="ship--container"
+        class="ship__container"
         v-for="([size, shipsNumber], i) in shipsTotal.shipsDestroyed.entries()"
         :key="i"
       >

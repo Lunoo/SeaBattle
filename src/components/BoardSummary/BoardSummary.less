@@ -1,28 +1,27 @@
-.board--summary {
+.board-summary {
   position: relative;
-  color: #fff;
 
-  &-inner {
+  &__inner {
     position: absolute;
     left: 20px;
     top: -20px;
   }
 
-  &-opened {
+  &--opened {
     &.board-large {
-      width: 170px;
+      width: calc(var(--cellSize) * 5 + 45px);
     }
 
-    &.board-default {
-      width: 150px;
+    &.board--default {
+      width: calc(var(--cellSize) * 4 + 45px);
     }
 
-    &.board-middle {
-      width: 120px;
+    &.board--middle {
+      width: calc(var(--cellSize) * 3 + 45px);
     }
 
-    &.board-small {
-      width: 100px;
+    &.board--small {
+      width: calc(var(--cellSize) * 2 + 45px);
     }
   }
 
@@ -30,7 +29,7 @@
     margin-right: 5px;
   }
 
-  .ship--container {
+  .ship__container {
     display: flex;
     margin-bottom: 5px;
     align-items: center;
@@ -41,14 +40,14 @@ h5 {
   margin-bottom: 5px;
   font-size: 13px;
 
-  &.board--summary-left {
+  &.board-summary--left {
     color: #44d444;
   }
 
-  &.board--summary-destroyed {
+  &.board-summary--destroyed {
     color: #fd3b3b;
 
-    .ship--container + & {
+    .ship__container + & {
       margin-top: 20px;
     }
   }

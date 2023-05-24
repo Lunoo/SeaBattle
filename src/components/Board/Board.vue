@@ -21,25 +21,25 @@ defineEmits(['shoot-cell'])
 </script>
 
 <template>
-  <div class="board--player">
-    <h3 class="board--header">{{ player.name }}</h3>
-    <div class="board--container">
+  <div class="board__player">
+    <h3 class="board__header">{{ player.name }}</h3>
+    <div class="board__container">
       <div
         :class="{
           board: true,
-          'board-disabled': !player.board || player.board.disabled,
-          'board-active': config.status === GAME.start && !player.active
+          'board--disabled': !player.board || player.board.disabled,
+          'board--active': config.status === GAME.start && !player.active
         }"
       >
-        <div class="board--row" v-for="(_, y) in config.boardSize.y" :key="y">
-          <label class="board--row-label">{{ String.fromCharCode(65 + y) }}</label>
+        <div class="board__row" v-for="(_, y) in config.boardSize.y" :key="y">
+          <label class="board__row__label">{{ String.fromCharCode(65 + y) }}</label>
           <board-cell
             v-for="(_, x) in config.boardSize.x"
             :key="x"
             :cellData="getCellData(player.board, { x, y })"
             @click="$emit('shoot-cell', { x, y })"
           >
-            <label v-if="y === 0" class="board--cell-label">{{ x + 1 }}</label>
+            <label v-if="y === 0" class="board-cell__label">{{ x + 1 }}</label>
           </board-cell>
         </div>
         <ship

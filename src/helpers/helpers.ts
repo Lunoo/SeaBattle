@@ -176,6 +176,7 @@ const generateShipsPlacement = ({
 export const clearBoard = (config: Ref<Configuration>, player: Ref<Player>) => {
   player.value = {
     ...player.value,
+    active: false,
     board: undefined,
     ships: []
   }

@@ -17,11 +17,11 @@ defineProps({
 </script>
 
 <template>
-  <div class="configurationPanel">
-    <div v-if="gameStatus === GAME.finish" class="configurationPanel--results">
+  <div class="configuration-panel">
+    <div v-if="gameStatus === GAME.finish" class="configuration-panel__results">
       {{ player }} win the game!
     </div>
-    <div class="configurationPanel--buttonsContainer">
+    <div class="configuration-panel__buttons-container">
       <button @click="$emit('new-game')">New game</button>
       <button :disabled="gameStatus !== GAME.configuring" @click="$emit('start-game')">
         Start

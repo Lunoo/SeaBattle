@@ -6,49 +6,46 @@
   position: relative;
   transition: box-shadow 0.3s;
 
-  &--player {
+  &__player {
     margin: auto;
   }
 
-  &--container {
+  &__container {
     display: flex;
     align-items: flex-start;
   }
 
-  &--header {
+  &__header {
     margin-bottom: 30px;
     padding-bottom: 10px;
     border-bottom: 1px solid #fff;
     font-size: 20px;
-    color: #fff;
     text-align: center;
   }
 
-  &--row {
+  &__row {
     display: flex;
     position: relative;
 
-    &-label {
+    &__label {
       width: 30px;
       position: absolute;
       left: -30px;
       line-height: var(--cellSize);
       text-align: center;
-      color: #fff;
     }
   }
 
-  &--cell-label {
+  &-cell__label {
     width: 100%;
     position: absolute;
     top: -25px;
     left: 0;
     text-align: center;
-    color: #fff;
     pointer-events: none;
   }
 
-  &-active {
+  &--active {
     box-shadow: 0 0 7px 2px #fff;
   }
 
