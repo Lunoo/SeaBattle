@@ -1,4 +1,4 @@
-import type { DIRECTION, GAME, PLAYERS, SHIP } from '@/contants'
+import type { BOARD_TYPES, DIRECTION, GAME, PLAYERS, SHIP } from '@/contants'
 
 export interface Coords {
   x: number
@@ -42,6 +42,7 @@ export interface Player {
 
 export interface Configuration {
   boardSize: Coords
+  boardType: BOARD_TYPES
   shipSizes: number[]
   status: GAME
 }

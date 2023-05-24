@@ -1,7 +1,30 @@
 .board--summary {
-  margin-top: -20px;
-  margin-left: 20px;
+  position: relative;
   color: #fff;
+
+  &-inner {
+    position: absolute;
+    left: 20px;
+    top: -20px;
+  }
+
+  &-opened {
+    &.board-large {
+      width: 170px;
+    }
+
+    &.board-default {
+      width: 150px;
+    }
+
+    &.board-middle {
+      width: 120px;
+    }
+
+    &.board-small {
+      width: 100px;
+    }
+  }
 
   .ship {
     margin-right: 5px;

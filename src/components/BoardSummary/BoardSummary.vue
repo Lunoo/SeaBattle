@@ -1,11 +1,15 @@
 <script lang="ts" setup>
-import { DIRECTION, SHIP } from '@/contants'
+import { BOARD_TYPES, DIRECTION, SHIP } from '@/contants'
 import type { PropType } from 'vue'
 import Ship from '@/components/Ship/Ship.vue'
 import type { ShipPlacement } from '@/types'
 import { computed } from 'vue'
 
 const props = defineProps({
+  boardType: {
+    type: String as PropType<BOARD_TYPES>,
+    required: true
+  },
   ships: {
     type: Object as PropType<ShipPlacement[]>,
     required: true
@@ -36,6 +40,10 @@ const shipsTotal = computed(() =>
   )
 )
 
+const shouldShow = computed(
+  () => !!shipsTotal.value.shipsLeft.size || !!shipsTotal.value.shipsDestroyed.size
+)
+
 const getDummyShipData = (index: number, size: number): ShipPlacement => ({
   direction: DIRECTION.horizontal,
   position: { x: 0, y: 0 },
@@ -46,24 +54,26 @@ const getDummyShipData = (index: number, size: number): ShipPlacement => ({
 </script>
 
 <template>
-  <div class="board--summary">
-    <h5 v-if="shipsTotal.shipsLeft.size > 0" class="board--summary-left">Left:</h5>
-    <div
-      class="ship--container"
-      v-for="([size, shipsNumber], i) in shipsTotal.shipsLeft.entries()"
-      :key="i"
-    >
-      <ship :ship-data="getDummyShipData(i, size)" :direction="DIRECTION.horizontal" />
-      x {{ shipsNumber }}
-    </div>
-    <h5 v-if="shipsTotal.shipsDestroyed.size > 0" class="board--summary-destroyed">Destroyed:</h5>
-    <div
-      class="ship--container"
-      v-for="([size, shipsNumber], i) in shipsTotal.shipsDestroyed.entries()"
-      :key="i"
-    >
-      <ship :ship-data="getDummyShipData(i, size)" :direction="DIRECTION.horizontal" />
-      x {{ shipsNumber }}
+  <div :class="`board--summary ${shouldShow ? 'board--summary-opened' : ''} board-${boardType}`">
+    <div class="board--summary-inner">
+      <h5 v-if="shipsTotal.shipsLeft.size > 0" class="board--summary-left">Left:</h5>
+      <div
+        class="ship--container"
+        v-for="([size, shipsNumber], i) in shipsTotal.shipsLeft.entries()"
+        :key="i"
+      >
+        <ship :ship-data="getDummyShipData(i, size)" :direction="DIRECTION.horizontal" />
+        x {{ shipsNumber }}
+      </div>
+      <h5 v-if="shipsTotal.shipsDestroyed.size > 0" class="board--summary-destroyed">Destroyed:</h5>
+      <div
+        class="ship--container"
+        v-for="([size, shipsNumber], i) in shipsTotal.shipsDestroyed.entries()"
+        :key="i"
+      >
+        <ship :ship-data="getDummyShipData(i, size)" :direction="DIRECTION.horizontal" />
+        x {{ shipsNumber }}
+      </div>
     </div>
   </div>
 </template>

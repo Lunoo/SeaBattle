@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { BOARD_CONFIGURATION, BOARD_TYPES, GAME, PLAYERS } from '@/contants'
 import { Board, ConfigurationPanel, TheHeader } from './components'
 import type { Configuration, Coords, Player } from '@/types'
-import { GAME, PLAYERS } from '@/contants'
 import {
   changeTurn,
   clearBoard,
@@ -13,11 +13,14 @@ import {
 } from '@/helpers'
 import { ref, watch } from 'vue'
 
-const config = ref<Configuration>({
-  boardSize: { x: 10, y: 10 },
-  shipSizes: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
+const generateConfig = (type: BOARD_TYPES) => ({
+  boardType: type,
+  boardSize: BOARD_CONFIGURATION[type].boardSize,
+  shipSizes: BOARD_CONFIGURATION[type].shipSizes,
   status: GAME.initialization
 })
+
+const config = ref<Configuration>(generateConfig(BOARD_TYPES.small))
 const playerOne = ref<Player>({
   name: PLAYERS.playerOne,
   active: false,
@@ -106,6 +109,7 @@ watch(
   </main>
   <configuration-panel
     :game-status="config.status"
+    :player="playerOne.active ? PLAYERS.playerOne : PLAYERS.playerTwo"
     @new-game="createNewGame"
     @start-game="startGame"
   />

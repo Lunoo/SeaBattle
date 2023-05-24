@@ -1,8 +1,16 @@
-.ConfigurationPanel {
-  margin-bottom: 50px;
+.configurationPanel {
+  position: relative;
+  padding-bottom: 50px;
   display: flex;
   align-content: center;
   justify-content: center;
+
+
+  &--buttonsContainer {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
 
   button {
     width: 150px;
@@ -36,4 +44,16 @@
       opacity: 0.7;
     }
   }
+
+  &--results {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: -100px;
+    text-align: center;
+    font-size: 20px;
+    color: #fff;
+  }
+
 }

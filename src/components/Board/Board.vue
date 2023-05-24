@@ -49,7 +49,11 @@ defineEmits(['shoot-cell'])
           :ship-data="ship"
         />
       </div>
-      <board-summary :ship-sizes="config.shipSizes" :ships="player.ships" />
+      <board-summary
+        :board-type="config.boardType"
+        :ship-sizes="config.shipSizes"
+        :ships="player.ships"
+      />
     </div>
   </div>
 </template>
