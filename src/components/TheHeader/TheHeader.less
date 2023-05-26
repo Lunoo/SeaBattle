@@ -1,6 +1,45 @@
-header {
+.header {
+  display: flex;
+  align-items: center;
   margin-top: 30px;
-  font-size: 32px;
-  font-weight: bold;
-  text-align: center;
+
+  h1 {
+    width: 100%;
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &__settings {
+    position: absolute;
+    right: 40px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background: transparent url("@/assets/gear.svg");
+    background-size: contain;
+    cursor: pointer;
+
+    &:before {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 #fff;
+      transition: box-shadow 0.3s;
+    }
+
+    &:hover:before {
+      box-shadow: 0 0 7px 1px #fff;
+    }
+
+    &:active:before {
+      box-shadow: 0 0 7px 3px #fff;
+    }
+  }
 }

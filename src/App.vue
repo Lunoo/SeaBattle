@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BOARD_CONFIGURATION, BOARD_TYPES, GAME, PLAYERS } from '@/contants'
-import { Board, ConfigurationPanel, TheHeader } from './components'
+import { Board, ConfigurationPanel, Modal, TheHeader } from './components'
 import type { Configuration, Coords, Player } from '@/types'
 import {
   changeTurn,
@@ -19,8 +19,8 @@ const generateConfig = (type: BOARD_TYPES) => ({
   shipSizes: BOARD_CONFIGURATION[type].shipSizes,
   status: GAME.initialization
 })
-
 const config = ref<Configuration>(generateConfig(BOARD_TYPES.default))
+
 const playerOne = ref<Player>({
   name: PLAYERS.playerOne,
   active: false,
@@ -31,6 +31,8 @@ const playerTwo = ref<Player>({
   active: false,
   ships: []
 })
+
+const modalRef = ref<Modal>(null)
 
 const createNewGame = () => {
   config.value.status = GAME.configuring
@@ -83,6 +85,9 @@ const handleEnemyTurn = () => {
   const { isTargetHit } = shootCell(config.value.boardSize, playerOne, cell)
   changeTurn(config, playerOne, playerTwo, isTargetHit)
 }
+const handleOpenSettings = () => {
+  modalRef.value?.openModal()
+}
 
 watch(
   () => [playerTwo.value.active, playerOne.value.board],
@@ -102,7 +107,7 @@ watch(
 </script>
 
 <template>
-  <the-header />
+  <the-header @toggle-settings="handleOpenSettings" />
   <main>
     <board :config="config" :player="playerOne" @shoot-cell="handlePlayerTwoShoot" />
     <board :config="config" :player="playerTwo" @shoot-cell="handlePlayerOneShoot" />
@@ -113,5 +118,9 @@ watch(
     @new-game="createNewGame"
     @start-game="startGame"
   />
+  <modal class-name="settings" ref="modalRef">
+    <template #header><h3>Settings</h3></template>
+    <template #body>Modal content</template>
+  </modal>
 </template>
 <style src="./App.less" />

@@ -54,7 +54,7 @@ const getDummyShipData = (index: number, size: number): ShipPlacement => ({
 </script>
 
 <template>
-  <div :class="`board-summary ${shouldShow ? 'board-summary--opened' : ''} board--${boardType}`">
+  <div :class="['board-summary', shouldShow && 'board-summary--opened', `board--${boardType}`]">
     <div class="board-summary__inner">
       <h5 v-if="shipsTotal.shipsLeft.size > 0" class="board-summary--left">Left:</h5>
       <div

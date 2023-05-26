@@ -26,7 +26,7 @@ const styles = computed(() => ({
 <template>
   <div
     v-if="shipData.status === SHIP.destroyed || !boardHidden"
-    :class="`ship ship--${direction ?? shipData.direction}`"
+    :class="['ship', `ship--${direction ?? shipData.direction}`]"
     :style="styles"
   >
     <span class="ship__cell" v-for="(_, i) in shipData.size" :key="i" />
