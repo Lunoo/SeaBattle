@@ -1,0 +1,67 @@
+[type='radio'] {
+  visibility: hidden;
+  width: 0;
+}
+
+.chip-option {
+  height: 28px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 12px;
+  background-color: #e0e0e0;
+  margin-right: 8px;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #dcd9d9;
+  }
+
+  &:focus {
+    background-color: #cfcfcf;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &__icon {
+    padding-right: 0;
+    background: url("@/assets/tick.svg") center left no-repeat;
+    background-size: contain;
+    transition: all 0.3s;
+  }
+
+  [type='radio']:checked + & {
+    color: #fff;
+
+    & .chip-option__icon {
+      padding-right: 22px;
+    }
+
+    &.easy {
+      background-color: #44d444;
+
+      &:hover {
+        background-color: #48c648;
+      }
+
+      &:focus {
+        background-color: #42b842;
+      }
+    }
+
+    &.hard {
+      background-color: #f44336;
+
+      &:hover {
+        background-color: #e64438;
+      }
+
+      &:focus {
+        background-color: #d4473d;
+      }
+    }
+  }
+}

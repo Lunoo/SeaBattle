@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { BOARD_CONFIGURATION, BOARD_TYPES, GAME, PLAYERS } from '@/contants'
-import { Board, ConfigurationPanel, Modal, TheHeader } from './components'
+import { BOARD_CONFIGURATION, BOARD_TYPES, GAME, GAME_MODE, PLAYERS } from '@/contants'
+import { Board, ChipListBox, ChipOption, ConfigurationPanel, Modal, TheHeader } from './components'
 import type { Configuration, Coords, Player } from '@/types'
 import {
   changeTurn,
@@ -16,6 +16,7 @@ import { ref, watch } from 'vue'
 const generateConfig = (type: BOARD_TYPES) => ({
   boardType: type,
   boardSize: BOARD_CONFIGURATION[type].boardSize,
+  mode: GAME_MODE.easy,
   shipSizes: BOARD_CONFIGURATION[type].shipSizes,
   status: GAME.initialization
 })
@@ -89,6 +90,10 @@ const handleOpenSettings = () => {
   modalRef.value?.openModal()
 }
 
+const handleChangeMode = (value: GAME_MODE) => {
+  config.value.mode = value
+}
+
 watch(
   () => [playerTwo.value.active, playerOne.value.board],
   ([isPlayerTwoActive]) => {
@@ -120,7 +125,12 @@ watch(
   />
   <modal class-name="settings" ref="modalRef">
     <template #header><h3>Settings</h3></template>
-    <template #body>Modal content</template>
+    <template #body>
+      <chip-list-box :selected="config.mode" :on-change="handleChangeMode" v-slot="chipProps">
+        <chip-option class-name="easy" v-bind="chipProps" :value="GAME_MODE.easy" />
+        <chip-option class-name="hard" v-bind="chipProps" :value="GAME_MODE.hard" />
+      </chip-list-box>
+    </template>
   </modal>
 </template>
 <style src="./App.less" />

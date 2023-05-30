@@ -51,3 +51,8 @@ export const BOARD_CONFIGURATION = {
     boardSize: { x: 4, y: 4 }
   }
 }
+
+export enum GAME_MODE {
+  easy = 'Easy',
+  hard = 'Hard'
+}
