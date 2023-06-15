@@ -3,7 +3,6 @@ import { GAME, PLAYERS } from '@/contants'
 import type { GAME as GameType } from '@/contants'
 import type { PropType } from 'vue'
 
-defineEmits(['new-game', 'start-game'])
 defineProps({
   gameStatus: {
     type: String as PropType<GameType>,
@@ -14,6 +13,7 @@ defineProps({
     required: true
   }
 })
+defineEmits(['new-game', 'toggle-game'])
 </script>
 
 <template>
@@ -22,9 +22,16 @@ defineProps({
       {{ player }} win the game!
     </div>
     <div class="configuration-panel__buttons-container">
-      <button @click="$emit('new-game')">New game</button>
-      <button :disabled="gameStatus !== GAME.configuring" @click="$emit('start-game')">
-        Start
+      <button @click="$emit('new-game')">
+        {{ gameStatus === GAME.configuring ? 'Generate' : 'New game' }}
+      </button>
+      <button
+        :disabled="gameStatus !== GAME.configuring && gameStatus !== GAME.finish"
+        @click="$emit('toggle-game')"
+      >
+        {{
+          gameStatus === GAME.configuring || gameStatus === GAME.initialization ? 'Start' : 'Finish'
+        }}
       </button>
     </div>
   </div>

@@ -53,6 +53,13 @@ const startGame = () => {
   playerOne.value.active = true
 }
 
+const finishGame = () => {
+  config.value.status = GAME.initialization
+  // Clear everything for both players.
+  clearBoard(playerOne)
+  clearBoard(playerTwo)
+}
+
 const handlePlayerOneShoot = (cell: Coords) => {
   if (config.value.status !== GAME.start || playerTwo.value.board?.disabled) {
     return
@@ -123,7 +130,7 @@ watch(
 </script>
 
 <template>
-  <the-header @toggle-settings="handleOpenSettings" />
+  <the-header :game-status="config.status" @toggle-settings="handleOpenSettings" />
   <main>
     <board :config="config" :player="playerOne" @shoot-cell="handlePlayerTwoShoot" />
     <board :config="config" :player="playerTwo" @shoot-cell="handlePlayerOneShoot" />
@@ -132,7 +139,7 @@ watch(
     :game-status="config.status"
     :player="playerOne.active ? PLAYERS.playerOne : PLAYERS.playerTwo"
     @new-game="createNewGame"
-    @start-game="startGame"
+    @toggle-game="config.status === GAME.finish ? finishGame() : startGame()"
   />
   <settings-modal
     :config="config"
