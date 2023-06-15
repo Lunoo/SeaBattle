@@ -173,7 +173,7 @@ const generateShipsPlacement = ({
   return shipsPlacement
 }
 
-export const clearBoard = (config: Ref<Configuration>, player: Ref<Player>) => {
+export const clearBoard = (player: Ref<Player>) => {
   player.value = {
     ...player.value,
     active: false,

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { BOARD_CONFIGURATION, BOARD_TYPES, GAME, GAME_MODE, PLAYERS } from '@/contants'
-import { Board, ChipListBox, ChipOption, ConfigurationPanel, Modal, TheHeader } from './components'
+import { Board, ConfigurationPanel, SettingsModal, TheHeader } from './components'
 import type { Configuration, Coords, Player } from '@/types'
 import {
   changeTurn,
@@ -33,13 +33,13 @@ const playerTwo = ref<Player>({
   ships: []
 })
 
-const modalRef = ref<Modal>(null)
+const modalRef = ref<SettingsModal>(null)
 
 const createNewGame = () => {
   config.value.status = GAME.configuring
   // Clear everything for both players.
-  clearBoard(config, playerOne)
-  clearBoard(config, playerTwo)
+  clearBoard(playerOne)
+  clearBoard(playerTwo)
   // Generate initial ships placement for the Player 1. It can be changed.
   initBoard(config, playerOne)
   playerOne.value.board!.disabled = false
@@ -86,12 +86,23 @@ const handleEnemyTurn = () => {
   const { isTargetHit } = shootCell(config.value.boardSize, playerOne, cell)
   changeTurn(config, playerOne, playerTwo, isTargetHit)
 }
+
 const handleOpenSettings = () => {
   modalRef.value?.openModal()
 }
 
 const handleChangeMode = (value: GAME_MODE) => {
   config.value.mode = value
+}
+
+const handleChangeSize = (boardType: BOARD_TYPES) => {
+  const { boardSize, shipSizes } = BOARD_CONFIGURATION[boardType]
+  config.value = {
+    ...config.value,
+    boardType,
+    boardSize,
+    shipSizes
+  }
 }
 
 watch(
@@ -123,14 +134,11 @@ watch(
     @new-game="createNewGame"
     @start-game="startGame"
   />
-  <modal class-name="settings" ref="modalRef">
-    <template #header><h3>Settings</h3></template>
-    <template #body>
-      <chip-list-box :selected="config.mode" :on-change="handleChangeMode" v-slot="chipProps">
-        <chip-option class-name="easy" v-bind="chipProps" :value="GAME_MODE.easy" />
-        <chip-option class-name="hard" v-bind="chipProps" :value="GAME_MODE.hard" />
-      </chip-list-box>
-    </template>
-  </modal>
+  <settings-modal
+    :config="config"
+    :change-mode="handleChangeMode"
+    :change-size="handleChangeSize"
+    ref="modalRef"
+  />
 </template>
 <style src="./App.less" />

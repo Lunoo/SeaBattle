@@ -1,6 +1,7 @@
 [type='radio'] {
   visibility: hidden;
   width: 0;
+  height: 0;
 }
 
 .chip-option {
@@ -9,10 +10,15 @@
   border-radius: 14px;
   padding: 0 12px;
   background-color: #e0e0e0;
-  margin-right: 8px;
+  margin: 0 8px 8px 0;
+  font-size: 13px;
   color: #000;
   cursor: pointer;
   transition: all 0.3s;
+
+  &:last-child {
+    margin: 0;
+  }
 
   &:hover {
     background-color: #dcd9d9;
@@ -35,6 +41,11 @@
 
   [type='radio']:checked + & {
     color: #fff;
+    background-color: #4b6cb7;
+
+    &:hover {
+      background-color: #3354a1;
+    }
 
     & .chip-option__icon {
       padding-right: 22px;

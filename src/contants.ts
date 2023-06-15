@@ -30,6 +30,16 @@ export enum BOARD_TYPES {
 }
 
 export const BOARD_CONFIGURATION = {
+  [BOARD_TYPES.small]: {
+    name: 'Small: 4x4',
+    shipSizes: [2, 1, 1],
+    boardSize: { x: 4, y: 4 }
+  },
+  [BOARD_TYPES.middle]: {
+    name: 'Middle: 7x7',
+    shipSizes: [3, 2, 2, 1, 1, 1],
+    boardSize: { x: 7, y: 7 }
+  },
   [BOARD_TYPES.default]: {
     name: 'Default: 10x10',
     shipSizes: [4, 3, 3, 2, 2, 2, 1, 1, 1, 1],
@@ -39,16 +49,6 @@ export const BOARD_CONFIGURATION = {
     name: 'Large: 13x13',
     shipSizes: [5, 4, 4, 3, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1],
     boardSize: { x: 13, y: 13 }
-  },
-  [BOARD_TYPES.middle]: {
-    name: 'Middle: 7x7',
-    shipSizes: [3, 2, 2, 1, 1, 1],
-    boardSize: { x: 7, y: 7 }
-  },
-  [BOARD_TYPES.small]: {
-    name: 'Small: 4x4',
-    shipSizes: [2, 1, 1],
-    boardSize: { x: 4, y: 4 }
   }
 }
 
