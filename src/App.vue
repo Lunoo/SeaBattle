@@ -33,7 +33,7 @@ const playerTwo = ref<Player>({
   ships: []
 })
 
-const modalRef = ref<SettingsModal>(null)
+const modalRef = ref<InstanceType<typeof SettingsModal> | null>(null)
 
 const createNewGame = () => {
   config.value.status = GAME.configuring

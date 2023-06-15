@@ -13,7 +13,7 @@ defineProps({
     type: String
   },
   onChange: {
-    type: Function as PropType<(value: string) => void>,
+    type: Function as PropType<(value: any) => void>,
     required: true
   }
 })

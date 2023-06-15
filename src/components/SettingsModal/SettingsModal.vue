@@ -22,11 +22,14 @@ defineProps({
   }
 })
 
-const modalRef = ref<Modal>(null)
+const boardTypeList = Object.keys(BOARD_CONFIGURATION) as BOARD_TYPES[]
+const modalRef = ref<InstanceType<typeof Modal> | null>(null)
 
 const openModal = () => {
   modalRef.value?.openModal()
 }
+
+const getBoardTypeName = (type: BOARD_TYPES) => BOARD_CONFIGURATION[type].name
 
 defineExpose({ openModal })
 </script>
@@ -57,11 +60,11 @@ defineExpose({ openModal })
           v-slot="chipProps"
         >
           <chip-option
-            v-for="boardType in Object.keys(BOARD_CONFIGURATION)"
+            v-for="boardType in boardTypeList"
             v-bind="chipProps"
             :key="boardType"
             :value="boardType"
-            >{{ BOARD_CONFIGURATION[boardType].name }}</chip-option
+            >{{ getBoardTypeName(boardType) }}</chip-option
           >
         </chip-list-box>
       </div>
