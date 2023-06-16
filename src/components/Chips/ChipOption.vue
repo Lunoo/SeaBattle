@@ -1,28 +1,22 @@
-<script lang="ts" setup>
-import type { PropType } from 'vue'
+<script lang="ts" generic="T extends string" setup>
+import { toRefs } from 'vue'
 
-defineProps({
-  className: {
-    type: String
-  },
-  radioName: {
-    type: String
-  },
-  selected: {
-    type: String
-  },
-  value: {
-    type: String
-  },
-  onChange: {
-    type: Function as PropType<(value?: string) => void>
-  }
-})
+interface ChipOptionProps<T> {
+  className?: string
+  radioName: string
+  selected?: T
+  value: T
+  onChange?: (value: T) => void
+}
+
+const props = defineProps<ChipOptionProps<T>>()
+const { className, radioName = 'default', selected, value, onChange } = toRefs(props)
+const handleClick = () => onChange?.value(value)
 </script>
 
 <template>
   <input type="radio" :name="radioName" :checked="selected === value" />
-  <button :class="['chip-option', className]" @click="onChange?.(value)">
+  <button :class="['chip-option', className]" @click="handleClick">
     <span class="chip-option__icon" />
     <slot>{{ value }}</slot>
   </button>

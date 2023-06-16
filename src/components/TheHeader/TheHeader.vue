@@ -19,7 +19,7 @@ defineEmits(['toggle-settings'])
     <h1>Sea Battle</h1>
     <button
       :disabled="!canOpenSettings"
-      :title="!canOpenSettings ? `Can't change settings while playing.` : null"
+      :title="!canOpenSettings ? `Can't change settings while playing.` : undefined"
       class="header__settings"
       @click="$emit('toggle-settings')"
     />
